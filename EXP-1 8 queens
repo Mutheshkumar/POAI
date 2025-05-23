@@ -1,0 +1,35 @@
+def print_solution(board, n):
+    for i in range(n):
+        print(" ".join(board[i]))
+    print()
+
+def is_safe(board, r, c, n):
+    for i in range(c):
+        if board[r][i] == 'Q':
+            return False
+    for i, j in zip(range(r-1, -1, -1), range(c-1, -1, -1)):
+        if board[i][j] == 'Q':
+            return False
+    for i, j in zip(range(r+1, n), range(c-1, -1, -1)):
+        if board[i][j] == 'Q':
+            return False
+    return True
+
+def solve(board, col, n, count):
+    if col >= n:
+        print_solution(board, n)
+        count[0] += 1
+        return
+    for i in range(n):
+        if is_safe(board, i, col, n):
+            board[i][col] = 'Q'
+            solve(board, col + 1, n, count)
+            board[i][col] = '.'
+
+# Driver code
+n = 4  # You can change n here
+board = [['.' for _ in range(n)] for _ in range(n)]
+count = [0]
+solve(board, 0, n, count)
+print("Total number of solutions:", count[0])
+
