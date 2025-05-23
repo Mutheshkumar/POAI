@@ -1,0 +1,15 @@
+% Facts
+likes(john, mary).
+likes(mary, pizza).
+likes(mary,juice).
+likes(john, pizza).
+
+% Rule: john likes what mary likes
+likes(john, X) :- likes(mary, X).
+
+% Query examples:
+% ?- likes(john, mary).      % true
+% ?- likes(mary, pizza).     % true
+% ?- likes(john, pizza).     % true
+% ?- likes(mary, X).         % X = pizza
+% ?- likes(john,money).      % False
