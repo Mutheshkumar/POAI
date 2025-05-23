@@ -1,0 +1,95 @@
+def print_board(board):
+    for row in board:
+        print(' '.join(row))
+    print()
+
+def is_winner(board, player):
+    for i in range(3):
+        if all(board[i][j] == player for j in range(3)) or \
+           all(board[j][i] == player for j in range(3)):
+            return True
+    return all(board[i][i] == player for i in range(3)) or \
+           all(board[i][2 - i] == player for i in range(3))
+
+def is_full(board):
+    return all(cell != '_' for row in board for cell in row)
+
+def minimax(board, is_ai):
+    if is_winner(board, 'O'): return 1
+    if is_winner(board, 'X'): return -1
+    if is_full(board): return 0
+
+    if is_ai:
+        best = -float('inf')
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] == '_':
+                    board[i][j] = 'O'
+                    score = minimax(board, False)
+                    board[i][j] = '_'
+                    best = max(best, score)
+        return best
+    else:
+        best = float('inf')
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] == '_':
+                    board[i][j] = 'X'
+                    score = minimax(board, True)
+                    board[i][j] = '_'
+                    best = min(best, score)
+        return best
+
+def best_move(board):
+    move = (-1, -1)
+    best_score = -float('inf')
+    for i in range(3):
+        for j in range(3):
+            if board[i][j] == '_':
+                board[i][j] = 'O'
+                score = minimax(board, False)
+                board[i][j] = '_'
+                if score > best_score:
+                    best_score = score
+                    move = (i, j)
+    return move
+
+# 🕹️ Game loop
+def play():
+    board = [['_'] * 3 for _ in range(3)]
+    print("Welcome to Tic-Tac-Toe! You are X, AI is O.")
+    print_board(board)
+
+    while True:
+        # Player move
+        row = int(input("Enter row (0-2): "))
+        col = int(input("Enter col (0-2): "))
+        if board[row][col] != '_':
+            print("Cell taken! Try again.")
+            continue
+        board[row][col] = 'X'
+
+        if is_winner(board, 'X'):
+            print_board(board)
+            print("You win!")
+            break
+        if is_full(board):
+            print_board(board)
+            print("It's a draw!")
+            break
+
+        # AI move
+        ai_row, ai_col = best_move(board)
+        board[ai_row][ai_col] = 'O'
+        print("\nAI played:")
+        print_board(board)
+
+        if is_winner(board, 'O'):
+            print("AI wins!")
+            break
+        if is_full(board):
+            print("It's a draw!")
+            break
+
+# 🔁 Run the game
+play()
